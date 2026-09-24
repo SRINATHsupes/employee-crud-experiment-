@@ -1,18 +1,13 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
 
 import {
-  createEmployee,
-  deleteEmployee,
-  getEmployees,
-  updateEmployee,
-} from "@/api";
+  useCreateEmployee,
+  useDeleteEmployee,
+  useEmployees,
+  useUpdateEmployee,
+} from "@/hooks/useEmployees";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -66,57 +61,18 @@ const emptyForm: FormData = {
 };
 
 function EmployeeManagement() {
-  const queryClient = useQueryClient();
-
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const employeesQuery = useQuery<Employee[]>({
-    queryKey: ["employees"],
-    queryFn: getEmployees,
-  });
-
+  const employeesQuery = useEmployees();
   const employees = employeesQuery.data ?? [];
 
-  console.log("TANSTACK QUERY:", {
-    data: employeesQuery.data,
-    employees,
-    isLoading: employeesQuery.isLoading,
-    isError: employeesQuery.isError,
-    error: employeesQuery.error,
-  });
-
-  const createMutation = useMutation({
-    mutationFn: createEmployee,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["employees"] });
-      closeForm();
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({
-      id,
-      employee,
-    }: {
-      id: string;
-      employee: Employee;
-    }) => updateEmployee(id, employee),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["employees"] });
-      closeForm();
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteEmployee,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["employees"] });
-    },
-  });
+  const createMutation = useCreateEmployee();
+  const updateMutation = useUpdateEmployee();
+  const deleteMutation = useDeleteEmployee();
 
   const filteredEmployees = useMemo(() => {
     const value = search.trim().toLowerCase();
