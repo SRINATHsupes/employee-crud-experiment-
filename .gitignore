@@ -1,0 +1,29 @@
+node_modules/
+dist/
+dist-ssr/
+*.local
+.env
+.DS_Store
+
+.nitro/
+.tanstack/
+.wrangler/
+.output/
+.vinxi/
+__unconfig*
+todos.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite
+*.sqlite3
+backend/venv/
+
+# Backups
+*.backup.*
+*.tanstack-backup.*
+
+# Editor
+.vscode/

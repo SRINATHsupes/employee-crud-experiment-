@@ -1,0 +1,9 @@
+node_modules/
+dist/
+backend/venv/
+backend/__pycache__/
+*.backup.*
+*.tanstack-backup.*
+.venv/
+coverage/
+.wrangler/
