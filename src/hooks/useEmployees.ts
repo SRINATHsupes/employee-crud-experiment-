@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   useMutation,
   useQuery,
@@ -12,9 +13,16 @@ import {
 } from "@/api";
 
 export function useEmployees() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
   return useQuery({
     queryKey: ["employees"],
     queryFn: getEmployees,
+    enabled: ready,
   });
 }
 
@@ -47,7 +55,6 @@ export function useUpdateEmployee() {
         salary: number;
       };
     }) => updateEmployee(id, employee),
-
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["employees"],

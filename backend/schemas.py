@@ -1,10 +1,19 @@
+from typing import Literal
+
 from pydantic import BaseModel
+
+
+Department = Literal[
+    "Backend",
+    "Frontend",
+    "Other",
+]
 
 
 class EmployeeCreate(BaseModel):
     id: str
     name: str
-    department: str
+    department: Department
     salary: int
 
 

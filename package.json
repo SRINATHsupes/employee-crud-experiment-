@@ -6,14 +6,18 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check .",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "dev:frontend": "vite dev --port 3000",
+    "dev:backend": "cd backend && ./venv/bin/python -m uvicorn main:app --reload",
+    "backend": "cd backend && source venv/bin/activate && uvicorn main:app --reload",
+    "dev:all": "concurrently \"npm run dev\" \"npm run backend\""
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -44,6 +48,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.4",
     "eslint": "^9.20.0",
     "prettier": "^3.8.1",
     "typescript": "^6.0.2",
