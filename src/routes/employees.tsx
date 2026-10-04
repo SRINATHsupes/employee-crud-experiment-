@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 
 import { getAuditLogs } from "@/api";
 import { getToken, getUser } from "@/utils/auth";
+import AppSidebar from "@/components/AppSidebar";
 
 import {
   useCreateEmployee,
@@ -99,7 +100,12 @@ function EmployeeManagement() {
   const [formData, setFormData] = useState<FormData>(emptyForm);
   const [errors, setErrors] = useState<FormErrors>({});
 
-  const user = getUser();
+  const [user, setUser] = useState<ReturnType<typeof getUser>>(null);
+
+  useEffect(() => {
+    setUser(getUser());
+  }, []);
+
   const isAdmin = user?.role === "admin";
 
   const employeesQuery = useEmployees();
@@ -294,8 +300,15 @@ function EmployeeManagement() {
     createMutation.isPending || updateMutation.isPending;
 
   return (
-    <main className="min-h-screen bg-muted/30 py-10">
-      <div className="mx-auto w-[90%] max-w-[1100px]">
+    <main className="min-h-screen bg-muted/30">
+      <div className="flex min-h-screen">
+        <AppSidebar
+          isAdmin={isAdmin}
+          onHistory={openHistory}
+        />
+
+        <div className="min-w-0 flex-1 py-10">
+          <div className="mx-auto w-[90%] max-w-[1100px]">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">
             Employee Management
@@ -776,6 +789,8 @@ function EmployeeManagement() {
             </Card>
           </div>
         )}
+          </div>
+        </div>
       </div>
     </main>
   );

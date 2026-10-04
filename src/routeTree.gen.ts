@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EmployeesRouteImport } from './routes/employees'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as EmployeesBackupRouteImport } from './routes/employees.backup'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmployeesRoute = EmployeesRouteImport.update({
@@ -34,37 +41,68 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeesBackupRoute = EmployeesBackupRouteImport.update({
+  id: '/backup',
+  path: '/backup',
+  getParentRoute: () => EmployeesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/employees': typeof EmployeesRoute
+  '/dashboard': typeof DashboardRoute
+  '/employees': typeof EmployeesRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/employees/backup': typeof EmployeesBackupRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/employees': typeof EmployeesRoute
+  '/dashboard': typeof DashboardRoute
+  '/employees': typeof EmployeesRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/employees/backup': typeof EmployeesBackupRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/employees': typeof EmployeesRoute
+  '/dashboard': typeof DashboardRoute
+  '/employees': typeof EmployeesRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/employees/backup': typeof EmployeesBackupRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/employees' | '/login' | '/register'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/employees'
+    | '/login'
+    | '/register'
+    | '/employees/backup'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/employees' | '/login' | '/register'
-  id: '__root__' | '/' | '/employees' | '/login' | '/register'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/employees'
+    | '/login'
+    | '/register'
+    | '/employees/backup'
+  id:
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/employees'
+    | '/login'
+    | '/register'
+    | '/employees/backup'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  EmployeesRoute: typeof EmployeesRoute
+  DashboardRoute: typeof DashboardRoute
+  EmployeesRoute: typeof EmployeesRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
 }
@@ -76,6 +114,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/employees': {
@@ -99,12 +144,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employees/backup': {
+      id: '/employees/backup'
+      path: '/backup'
+      fullPath: '/employees/backup'
+      preLoaderRoute: typeof EmployeesBackupRouteImport
+      parentRoute: typeof EmployeesRoute
+    }
   }
 }
 
+interface EmployeesRouteChildren {
+  EmployeesBackupRoute: typeof EmployeesBackupRoute
+}
+
+const EmployeesRouteChildren: EmployeesRouteChildren = {
+  EmployeesBackupRoute: EmployeesBackupRoute,
+}
+
+const EmployeesRouteWithChildren = EmployeesRoute._addFileChildren(
+  EmployeesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  EmployeesRoute: EmployeesRoute,
+  DashboardRoute: DashboardRoute,
+  EmployeesRoute: EmployeesRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
 }
