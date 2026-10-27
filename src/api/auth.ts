@@ -11,7 +11,7 @@ export type RegisterResponse = {
   role: "admin" | "viewer";
 };
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "/api";
 
 export async function login(
   username: string,

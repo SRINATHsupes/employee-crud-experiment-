@@ -1,6 +1,6 @@
 import { getToken } from "@/utils/auth";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "/api";
 
 async function request(url, options = {}) {
   const token = getToken();

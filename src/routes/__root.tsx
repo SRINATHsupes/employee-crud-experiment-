@@ -56,7 +56,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "Employee Management",
+        title: "Employee CRUD",
       },
     ],
     links: [
